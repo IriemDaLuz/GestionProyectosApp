@@ -74,7 +74,7 @@ class ListaProyectosScreen : Screen {
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(8.dp)
-                                .clickable { navigator?.push(ProyectoScreen(proyecto.first)) },
+                                .clickable { navigator?.push(ProyectoScreen(proyecto.first,proyecto.second)) },
                             backgroundColor = Color(0xFF1E1E1E),
                             elevation = 4.dp,
                             shape = RoundedCornerShape(8.dp)
@@ -103,7 +103,7 @@ class ListaProyectosScreen : Screen {
                         Row(modifier = Modifier.padding(start = 580.dp, top = 40.dp)) {
                                 Button(
                                     onClick = {
-                                        navigator?.push(ProyectoScreen(proyecto.first))
+                                        navigator?.push(ProyectoScreen(proyecto.first,proyecto.second))
                                     },
                                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.Cyan),
                                 ) {
