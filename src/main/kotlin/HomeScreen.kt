@@ -7,7 +7,6 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -16,21 +15,28 @@ import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 
-
 class HomeScreen : Screen {
     @Composable
     override fun Content() {
         var username by remember { mutableStateOf("Fabio") }
         val navigator = LocalNavigator.current
+        var filtro by remember { mutableStateOf("Activo") }
 
-        val projects = listOf(
-            Triple("Proyecto Alpha", "jksajsdajhsad", "Activo"),
-            Triple("Proyecto Beta", "jksajsdajhsad", "Activo"),
-            Triple("Proyecto Gamma", "jksajsdajhsad", "Activo"),
-            Triple("Proyecto Zeta", "jksajsdajhsad", "Finalizado: 12/01/2024"),
-            Triple("Proyecto Delta", "jksajsdajhsad", "Finalizado: 08/12/2023"),
-            Triple("Proyecto Epsilon", "jksajsdajhsad", "Finalizado: 05/10/2023")
+
+        val proyectos = listOf(
+            Triple("Proyecto Alpha", "Propietario", "Activo"),
+            Triple("Proyecto Beta", "Desconocido", "Activo"),
+            Triple("Proyecto Gamma", "Desconocido", "Activo"),
+            Triple("Proyecto Zeta", "Desconocido", "Finalizado"),
+            Triple("Proyecto Delta", "Propietario", "Finalizado"),
+            Triple("Proyecto Epsilon", "Desconocido", "Finalizado")
         )
+
+        val proyectosActivos = proyectos.filter { it.third == "Activo" }
+
+        val proyectosFiltrados = proyectosActivos.filter { proyecto ->
+            filtro == "Historial" && proyecto.third.contains("Finalizado")|| (filtro == "Activo" && proyecto.third.contains("Activo"))
+        }
 
         Box(
             modifier = Modifier
@@ -63,12 +69,27 @@ class HomeScreen : Screen {
                     fontStyle = FontStyle.Italic,
                     color = Color.Gray
                 )
+                Spacer(modifier = Modifier.height(10.dp))
+                Row {
+                    Button(
+                        onClick = { filtro = "Activo" },
+                        colors = ButtonDefaults.buttonColors(backgroundColor = if (filtro == "Activo") Color.Cyan else Color.Gray)
+                    ) {
+                        Text("Activo", color = Color.Black, fontWeight = FontWeight.Bold)
+                    }
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Button(
+                        onClick = { filtro = "Historial" },
+                        colors = ButtonDefaults.buttonColors(backgroundColor = if (filtro == "Historial") Color.Cyan else Color.Gray)
+                    ) {
+                        Text("Historial", color = Color.Black, fontWeight = FontWeight.Bold)
+                    }
+                }
                 Spacer(modifier = Modifier.height(20.dp))
-
                 LazyColumn(
                     modifier = Modifier.height(300.dp)
                 ) {
-                    items(projects) { project ->
+                    items(proyectosFiltrados) { proyecto ->
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -78,30 +99,39 @@ class HomeScreen : Screen {
                             shape = RoundedCornerShape(8.dp)
                         ) {
                             Column(modifier = Modifier.padding(16.dp)) {
+                                Row {
+                                    Text(
+                                        text = proyecto.first,
+                                        color = Color.White,
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                    Text(
+                                        text = proyecto.third,
+                                        color = Color.Gray,
+                                        fontSize = 12.sp,
+                                        fontWeight = FontWeight.Medium,
+                                        modifier = Modifier.padding(start = 400.dp)
+                                    )
+                                }
+
                                 Text(
-                                    text = project.first,
-                                    color = Color.White,
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Bold
-                                )
-                                Text(
-                                    text = project.second,
+                                    text = proyecto.second,
                                     color = Color.Gray,
                                     fontSize = 14.sp
-                                )
-                                Text(
-                                    text = project.third,
-                                    color = if (project.third == "Activo") Color.Green else Color.Red,
-                                    fontSize = 14.sp,
-                                    fontWeight = FontWeight.Medium
                                 )
                             }
                         }
                     }
                 }
-
-
-                Spacer(modifier = Modifier.height(40.dp))
+                Button(
+                    onClick = {
+                        navigator?.push(ListaProyectosScreen())
+                    },
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Cyan)
+                ) {
+                    Text("Ver Todos", color = Color.Black, fontWeight = FontWeight.Bold)
+                }
                 Button(
                     onClick = {
                         navigator?.pop()
@@ -110,7 +140,10 @@ class HomeScreen : Screen {
                 ) {
                     Text("Desconectar", color = Color.Black, fontWeight = FontWeight.Bold)
                 }
+
             }
+
         }
+
     }
 }
