@@ -22,11 +22,11 @@ class ListaProyectosScreen : Screen {
         var filtro by remember { mutableStateOf("Todos") }
         val proyectos = listOf(
             Triple("Proyecto Alpha", "Propietario", "Activo"),
-            Triple("Proyecto Beta", "Desconocido", "Activo"),
-            Triple("Proyecto Gamma", "Desconocido", "Activo"),
-            Triple("Proyecto Zeta", "Desconocido", "Finalizado: 12/01/2024"),
-            Triple("Proyecto Delta", "Propietario", "Finalizado: 08/12/2023"),
-            Triple("Proyecto Epsilon", "Desconocido", "Finalizado: 05/10/2023")
+            Triple("Proyecto Beta", "@JavierMontilla", "Activo"),
+            Triple("Proyecto Gamma", "@SantaMariaDR", "Activo"),
+            Triple("Proyecto Zeta", "@LuisSantos", "Finalizado"),
+            Triple("Proyecto Delta", "Propietario", "Finalizado"),
+            Triple("Proyecto Epsilon", "@JavierMontilla", "Finalizado")
         )
 
         val proyectosActivos = proyectos.filter { it.third == "Activo" }
@@ -100,7 +100,7 @@ class ListaProyectosScreen : Screen {
                                     )
                                 }
                             }
-                        Row(modifier = Modifier.padding(start = 580.dp, top = 40.dp)) {
+                        Row(horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(15.dp)) {
                                 Button(
                                     onClick = {
                                         navigator?.push(ProyectoScreen(proyecto.first,proyecto.second))
@@ -112,7 +112,20 @@ class ListaProyectosScreen : Screen {
                             }
                         }
                     }
+                    item {
+                        Row () {
+                            Button(
+                                onClick = {
+                                    navigator?.pop()
+                                },
+                                colors = ButtonDefaults.buttonColors(backgroundColor = Color.Cyan)
+                            ) {
+                                Text("Volver", color = Color.Black, fontWeight = FontWeight.Bold)
+                            }
+                        }
+                    }
                 }
+
             }
         }
     }

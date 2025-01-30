@@ -25,11 +25,11 @@ class HomeScreen : Screen {
 
         val proyectos = listOf(
             Triple("Proyecto Alpha", "Propietario", "Activo"),
-            Triple("Proyecto Beta", "Desconocido", "Activo"),
-            Triple("Proyecto Gamma", "Desconocido", "Activo"),
-            Triple("Proyecto Zeta", "Desconocido", "Finalizado"),
+            Triple("Proyecto Beta", "@JavierMontilla", "Activo"),
+            Triple("Proyecto Gamma", "@JavierMontilla", "Activo"),
+            Triple("Proyecto Zeta", "@LuisSantos", "Finalizado"),
             Triple("Proyecto Delta", "Propietario", "Finalizado"),
-            Triple("Proyecto Epsilon", "Desconocido", "Finalizado")
+            Triple("Proyecto Epsilon", "@JavierMontilla", "Finalizado")
         )
 
         val proyectosActivos = proyectos.filter { it.third == "Activo" }
@@ -124,21 +124,25 @@ class HomeScreen : Screen {
                         }
                     }
                 }
-                Button(
-                    onClick = {
-                        navigator?.push(ListaProyectosScreen())
-                    },
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Cyan)
-                ) {
-                    Text("Ver Todos", color = Color.Black, fontWeight = FontWeight.Bold)
-                }
-                Button(
-                    onClick = {
-                        navigator?.pop()
-                    },
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Cyan),
-                ) {
-                    Text("Desconectar", color = Color.Black, fontWeight = FontWeight.Bold)
+                Row{
+                    Button(
+                        onClick = {
+                            navigator?.push(ListaProyectosScreen())
+                        },
+                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
+                        modifier = Modifier.padding(25.dp)
+                    ) {
+                        Text("Ver Todos", color = Color.Black, fontWeight = FontWeight.Bold)
+                    }
+                    Button(
+                        onClick = {
+                            navigator?.pop()
+                        },
+                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Cyan),
+                        modifier = Modifier.padding(25.dp)
+                    ) {
+                        Text("Desconectar", color = Color.Black, fontWeight = FontWeight.Bold)
+                    }
                 }
 
             }
