@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -47,14 +48,18 @@ class ListaProyectosScreen : Screen {
                 modifier = Modifier.padding(24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text = "Lista de Proyectos",
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
-                )
-                Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(20.dp))
                 Row {
+                    Text("Search ", color = Color.White, modifier = Modifier.padding(top = 5.dp))
+                    BasicTextField(
+                        value ="" ,
+                        onValueChange = { },
+                        modifier = Modifier
+                            .background(Color(0xFF2E2E2E), RoundedCornerShape(8.dp))
+                            .padding(5.dp),
+                        textStyle = LocalTextStyle.current.copy(color = Color.White)
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
                     IconButton(onClick = { filtro = "Todos" }) {
                         Icon(
                             imageVector = Icons.Filled.List,
