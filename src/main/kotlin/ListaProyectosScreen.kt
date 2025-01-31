@@ -5,6 +5,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -53,18 +55,19 @@ class ListaProyectosScreen : Screen {
                 )
                 Spacer(modifier = Modifier.height(10.dp))
                 Row {
-                    Button(
-                        onClick = { filtro = "Todos" },
-                        colors = ButtonDefaults.buttonColors(backgroundColor = if (filtro == "Todos") Color.Cyan else Color.Gray)
-                    ) {
-                        Text("Todos", color = Color.Black, fontWeight = FontWeight.Bold)
+                    IconButton(onClick = { filtro = "Todos" }) {
+                        Icon(
+                            imageVector = Icons.Filled.List,
+                            contentDescription = "Todos",
+                            tint = if (filtro == "Todos") Color.Cyan else Color.Gray
+                        )
                     }
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Button(
-                        onClick = { filtro = "Propietario" },
-                        colors = ButtonDefaults.buttonColors(backgroundColor = if (filtro == "Propietario") Color.Cyan else Color.Gray)
-                    ) {
-                        Text("Propietario", color = Color.Black, fontWeight = FontWeight.Bold)
+                    IconButton(onClick = { filtro = "Propietario" }) {
+                        Icon(
+                            imageVector = Icons.Filled.Person,
+                            contentDescription = "Propietario",
+                            tint = if (filtro == "Propietario") Color.Cyan else Color.Gray
+                        )
                     }
                 }
                 Spacer(modifier = Modifier.height(20.dp))
@@ -112,15 +115,17 @@ class ListaProyectosScreen : Screen {
                             }
                         }
                     }
-                    item {
-                        Row () {
-                            Button(
-                                onClick = {
-                                    navigator?.pop()
-                                },
-                                colors = ButtonDefaults.buttonColors(backgroundColor = Color.Cyan)
+                    item{
+                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                            IconButton(
+                                onClick = { navigator?.pop() },
+                                modifier = Modifier.padding(16.dp),
                             ) {
-                                Text("Volver", color = Color.Black, fontWeight = FontWeight.Bold)
+                                Icon(
+                                    Icons.Filled.ArrowBack,
+                                    contentDescription = "Vuelve a casa vuelve",
+                                    tint = Color.White
+                                )
                             }
                         }
                     }

@@ -2,11 +2,18 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material.icons.filled.List
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -22,7 +29,6 @@ class HomeScreen : Screen {
         val navigator = LocalNavigator.current
         var filtro by remember { mutableStateOf("Activo") }
 
-
         val proyectos = listOf(
             Triple("Proyecto Alpha", "Propietario", "Activo"),
             Triple("Proyecto Beta", "@JavierMontilla", "Activo"),
@@ -32,62 +38,65 @@ class HomeScreen : Screen {
             Triple("Proyecto Epsilon", "@JavierMontilla", "Finalizado")
         )
 
-        val proyectosActivos = proyectos.filter { it.third == "Activo" }
-
-        val proyectosFiltrados = proyectosActivos.filter { proyecto ->
-            filtro == "Historial" && proyecto.third.contains("Finalizado")|| (filtro == "Activo" && proyecto.third.contains("Activo"))
+        val proyectosFiltrados = proyectos.filter { proyecto ->
+            (filtro == "Activo" && proyecto.third == "Activo") ||
+                    (filtro == "Historial" && proyecto.third == "Finalizado")
         }
 
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFF121212)),
-            contentAlignment = Alignment.Center
+                .background(Color(0xFF121212))
+                .fillMaxHeight(),
+            contentAlignment = Alignment.TopStart
         ) {
             Column(
                 modifier = Modifier.padding(24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Row {
-                    Text(
-                        text = "Hola, ",
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(50.dp)
+                            .clip(CircleShape)
+                            .background(Color.Gray)
                     )
-                    Text(
-                        text = username,
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White
-                    )
-                }
-                Text(
-                    text = "Gestor",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    fontStyle = FontStyle.Italic,
-                    color = Color.Gray
-                )
-                Spacer(modifier = Modifier.height(10.dp))
-                Row {
-                    Button(
-                        onClick = { filtro = "Activo" },
-                        colors = ButtonDefaults.buttonColors(backgroundColor = if (filtro == "Activo") Color.Cyan else Color.Gray)
-                    ) {
-                        Text("Activo", color = Color.Black, fontWeight = FontWeight.Bold)
-                    }
+
                     Spacer(modifier = Modifier.width(10.dp))
-                    Button(
-                        onClick = { filtro = "Historial" },
-                        colors = ButtonDefaults.buttonColors(backgroundColor = if (filtro == "Historial") Color.Cyan else Color.Gray)
-                    ) {
-                        Text("Historial", color = Color.Black, fontWeight = FontWeight.Bold)
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(text = username, fontSize = 16.sp, color = Color.White)
+                        Text(
+                            text = "Gestor",
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Bold,
+                            fontStyle = FontStyle.Italic,
+                            color = Color.Gray
+                        )
+                    }
+                    Row {
+                        IconButton(onClick = { filtro = "Activo" }) {
+                            Icon(
+                                imageVector = Icons.Filled.List,
+                                contentDescription = "Activo",
+                                tint = if (filtro == "Activo") Color.Cyan else Color.Gray
+                            )
+                        }
+                        IconButton(onClick = { filtro = "Historial" }) {
+                            Icon(
+                                imageVector = Icons.Filled.CheckCircle,
+                                contentDescription = "Historial",
+                                tint = if (filtro == "Historial") Color.Cyan else Color.Gray
+                            )
+                        }
                     }
                 }
+
                 Spacer(modifier = Modifier.height(20.dp))
                 LazyColumn(
-                    modifier = Modifier.height(300.dp)
+                    modifier = Modifier.height(300.dp).weight(1f)
                 ) {
                     items(proyectosFiltrados) { proyecto ->
                         Card(
@@ -99,22 +108,24 @@ class HomeScreen : Screen {
                             shape = RoundedCornerShape(8.dp)
                         ) {
                             Column(modifier = Modifier.padding(16.dp)) {
-                                Row {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
                                     Text(
                                         text = proyecto.first,
                                         color = Color.White,
                                         fontSize = 16.sp,
                                         fontWeight = FontWeight.Bold
                                     )
+                                    Spacer(modifier = Modifier.weight(1f))
                                     Text(
                                         text = proyecto.third,
-                                        color = Color.Gray,
+                                        color = if (proyecto.third == "Activo") Color.Green else Color.Red,
                                         fontSize = 12.sp,
-                                        fontWeight = FontWeight.Medium,
-                                        modifier = Modifier.padding(start = 400.dp)
+                                        fontWeight = FontWeight.Medium
                                     )
                                 }
-
                                 Text(
                                     text = proyecto.second,
                                     color = Color.Gray,
@@ -124,30 +135,24 @@ class HomeScreen : Screen {
                         }
                     }
                 }
-                Row{
+                Row {
                     Button(
-                        onClick = {
-                            navigator?.push(ListaProyectosScreen())
-                        },
-                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
-                        modifier = Modifier.padding(25.dp)
-                    ) {
-                        Text("Ver Todos", color = Color.Black, fontWeight = FontWeight.Bold)
-                    }
-                    Button(
-                        onClick = {
-                            navigator?.pop()
-                        },
+                        onClick = { navigator?.push(ListaProyectosScreen()) },
                         colors = ButtonDefaults.buttonColors(backgroundColor = Color.Cyan),
-                        modifier = Modifier.padding(25.dp)
+                        modifier = Modifier.padding(vertical = 16.dp)
                     ) {
-                        Text("Desconectar", color = Color.Black, fontWeight = FontWeight.Bold)
+                        Text("Explorar Proyectos", color = Color.Black, fontWeight = FontWeight.Bold)
+                    }
+
+                    Spacer(modifier = Modifier.weight(1f))
+                    IconButton(
+                        onClick = { navigator?.pop() },
+                        modifier = Modifier.padding(16.dp)
+                    ) {
+                        Icon(Icons.Filled.ExitToApp, contentDescription = "Logout", tint = Color.White)
                     }
                 }
-
             }
-
         }
-
     }
 }

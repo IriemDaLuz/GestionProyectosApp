@@ -5,6 +5,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.TopCenter
@@ -22,10 +26,12 @@ class ProyectoScreen(private val nombreProyecto: String, private val owner: Stri
     override fun Content() {
         val navigator = LocalNavigator.current
 
-        var showDialog by remember { mutableStateOf(false) }
-        var selectedTask by remember { mutableStateOf("") }
-        val programadores = listOf("Juan", "Ana", "Luis", "María", "Carlos")
-        val selectedProgramadores = remember { mutableStateMapOf<String, Boolean>() }
+        val tareas = listOf(
+            Triple("Tarea 1", "Descripción 1", "Urgente"),
+            Triple("Tarea 2", "Descripción 2", "Urgente"),
+            Triple("Tarea 3", "Descripción 3", "Urgente"),
+            Triple("Tarea 4", "Descripción 4", "Urgente"),
+        )
 
         Box(
             modifier = Modifier
@@ -40,8 +46,7 @@ class ProyectoScreen(private val nombreProyecto: String, private val owner: Stri
                         text = "Detalles de ",
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color.White,
-                        modifier = Modifier.padding(top = 8.dp)
+                        color = Color.White
                     )
                     Text(
                         text = nombreProyecto,
@@ -49,21 +54,26 @@ class ProyectoScreen(private val nombreProyecto: String, private val owner: Stri
                         fontWeight = FontWeight.Bold,
                         color = Color.Cyan
                     )
+
+
                 }
-                Text(
+                Row {
+                    Text(
                     text = owner,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     fontStyle = FontStyle.Italic,
                     color = Color.Gray
-                )
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
+                    Button(
+                        onClick = {},
+                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Cyan),
+                    ) {
+                        Text("Asignar Tareas", color = Color.Black, fontWeight = FontWeight.Bold)
+                    }
+                }
 
-                val tareas = listOf(
-                    Triple("Tarea 1", "Descripción 1", "Urgente"),
-                    Triple("Tarea 2", "Descripción 2", "Urgente"),
-                    Triple("Tarea 3", "Descripción 3", "Urgente"),
-                    Triple("Tarea 4", "Descripción 4", "Urgente"),
-                )
 
                 Spacer(modifier = Modifier.height(20.dp))
                 LazyColumn(modifier = Modifier.fillMaxHeight()) {
@@ -71,8 +81,7 @@ class ProyectoScreen(private val nombreProyecto: String, private val owner: Stri
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(8.dp)
-                                .clickable { navigator?.push(TareaScreen(tarea.first, tarea.second)) },
+                                .padding(8.dp),
                             backgroundColor = Color(0xFF1E1E1E),
                             elevation = 4.dp,
                             shape = RoundedCornerShape(8.dp)
@@ -112,14 +121,14 @@ class ProyectoScreen(private val nombreProyecto: String, private val owner: Stri
                                             fontSize = 14.sp
                                         )
                                         Button(
-                                                onClick = {
-                                                    selectedTask = tarea.first
-                                                },
+                                            onClick = {
+                                                navigator?.push(TareaScreen(tarea.first,tarea.second))
+                                            },
                                         colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
                                         modifier = Modifier.padding(top = 8.dp)
                                         ) {
                                         Text(
-                                            "Modificar programadores",
+                                            "Modificar tarea",
                                             color = Color.Black,
                                             fontWeight = FontWeight.Bold,
                                             fontSize = 10.sp
@@ -128,6 +137,21 @@ class ProyectoScreen(private val nombreProyecto: String, private val owner: Stri
                                     }
                                 }
 
+                            }
+                        }
+                    }
+
+                    item{
+                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                            IconButton(
+                                onClick = { navigator?.pop() },
+                                modifier = Modifier.padding(16.dp),
+                            ) {
+                                Icon(
+                                    Icons.Filled.ArrowBack,
+                                    contentDescription = "Vuelve a casa vuelve",
+                                    tint = Color.White
+                                )
                             }
                         }
                     }
