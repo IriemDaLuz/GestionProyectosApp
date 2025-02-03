@@ -6,9 +6,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.TopCenter
@@ -67,10 +65,11 @@ class ProyectoScreen(private val nombreProyecto: String, private val owner: Stri
                     )
                     Spacer(modifier = Modifier.weight(1f))
                     Button(
-                        onClick = {},
+                        onClick = {
+                            navigator?.push(AgregarTareaScreen())                        },
                         colors = ButtonDefaults.buttonColors(backgroundColor = Color.Cyan),
                     ) {
-                        Text("Asignar Tareas", color = Color.Black, fontWeight = FontWeight.Bold)
+                        Text("Agregar Tareas", color = Color.Black, fontWeight = FontWeight.Bold)
                     }
                 }
 

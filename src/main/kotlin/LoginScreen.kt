@@ -14,7 +14,6 @@ import androidx.compose.ui.unit.sp
 
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
 
 
 class LoginScreen : Screen {
