@@ -1,3 +1,5 @@
+package screens
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -7,7 +9,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.List
 import androidx.compose.runtime.*
@@ -21,26 +22,27 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
+import kotlinx.coroutines.launch
+import model.ProjectResponse
+import model.User
+import network.getProjects
 
-class HomeScreen : Screen {
+class HomeScreen(user: User) : Screen {
+    val user = user
+
     @Composable
     override fun Content() {
-        var username by remember { mutableStateOf("Fabio") }
         val navigator = LocalNavigator.current
+        val scope = rememberCoroutineScope()
         var filtro by remember { mutableStateOf("Activo") }
+        var proyectos by remember { mutableStateOf<List<ProjectResponse>>(emptyList()) }
+        var isLoading by remember { mutableStateOf(true) }
 
-        val proyectos = listOf(
-            Triple("Proyecto Alpha", "Propietario", "Activo"),
-            Triple("Proyecto Beta", "@JavierMontilla", "Activo"),
-            Triple("Proyecto Gamma", "@JavierMontilla", "Activo"),
-            Triple("Proyecto Zeta", "@LuisSantos", "Finalizado"),
-            Triple("Proyecto Delta", "Propietario", "Finalizado"),
-            Triple("Proyecto Epsilon", "@JavierMontilla", "Finalizado")
-        )
-
-        val proyectosFiltrados = proyectos.filter { proyecto ->
-            (filtro == "Activo" && proyecto.third == "Activo") ||
-                    (filtro == "Historial" && proyecto.third == "Finalizado")
+        LaunchedEffect(filtro) {
+            scope.launch {
+                proyectos = getProjects(if (filtro == "Activo") "activo" else "historial")
+                isLoading = false
+            }
         }
 
         Box(
@@ -67,7 +69,9 @@ class HomeScreen : Screen {
 
                     Spacer(modifier = Modifier.width(10.dp))
                     Column(modifier = Modifier.weight(1f)) {
-                        Text(text = username, fontSize = 16.sp, color = Color.White)
+                        Text(
+                            text = user.nombre,
+                            fontSize = 16.sp, color = Color.White)
                         Text(
                             text = "Gestor",
                             fontSize = 12.sp,
@@ -95,55 +99,45 @@ class HomeScreen : Screen {
                 }
 
                 Spacer(modifier = Modifier.height(20.dp))
-                LazyColumn(
-                    modifier = Modifier.height(300.dp).weight(1f)
-                ) {
-                    items(proyectosFiltrados) { proyecto ->
-                        Card(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp),
-                            backgroundColor = Color(0xFF1E1E1E),
-                            elevation = 4.dp,
-                            shape = RoundedCornerShape(8.dp)
-                        ) {
-                            Column(modifier = Modifier.padding(16.dp)) {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    modifier = Modifier.fillMaxWidth()
-                                ) {
+                if (isLoading) {
+                    CircularProgressIndicator(color = Color.Cyan)
+                } else {
+                    LazyColumn(
+                        modifier = Modifier.height(300.dp).weight(1f)
+                    ) {
+                        items(proyectos) { proyecto ->
+                            Card(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(8.dp),
+                                backgroundColor = Color(0xFF1E1E1E),
+                                elevation = 4.dp,
+                                shape = RoundedCornerShape(8.dp)
+                            ) {
+                                Column(modifier = Modifier.padding(16.dp)) {
                                     Text(
-                                        text = proyecto.first,
+                                        text = proyecto.name,
                                         color = Color.White,
                                         fontSize = 16.sp,
                                         fontWeight = FontWeight.Bold
                                     )
-                                    Spacer(modifier = Modifier.weight(1f))
                                     Text(
-                                        text = proyecto.third,
-                                        color = if (proyecto.third == "Activo") Color.Green else Color.Red,
+                                        text = "Cliente ID: ${proyecto.clientId}",
+                                        color = Color.Gray,
+                                        fontSize = 14.sp
+                                    )
+                                    Text(
+                                        text = "Estado: ${if (proyecto.endDate.isEmpty()) "Activo" else "Finalizado"}",
+                                        color = if (proyecto.endDate.isEmpty()) Color.Green else Color.Red,
                                         fontSize = 12.sp,
                                         fontWeight = FontWeight.Medium
                                     )
                                 }
-                                Text(
-                                    text = proyecto.second,
-                                    color = Color.Gray,
-                                    fontSize = 14.sp
-                                )
                             }
                         }
                     }
                 }
                 Row {
-                    Button(
-                        onClick = { navigator?.push(ListaProyectosScreen()) },
-                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Cyan),
-                        modifier = Modifier.padding(vertical = 16.dp)
-                    ) {
-                        Text("Explorar Proyectos", color = Color.Black, fontWeight = FontWeight.Bold)
-                    }
-
                     Spacer(modifier = Modifier.weight(1f))
                     IconButton(
                         onClick = { navigator?.pop() },

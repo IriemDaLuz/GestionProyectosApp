@@ -1,3 +1,5 @@
+package screens
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -18,12 +20,12 @@ import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 
-class TareaScreen(private val tareaNombre: String, private val tareaDescripcion: String) : Screen {
+class AgregarTareaScreen : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.current
-        var nombreTarea by remember { mutableStateOf(tareaNombre) }
-        var descripcionTarea by remember { mutableStateOf(tareaDescripcion) }
+        var nombreTarea by remember { mutableStateOf("") }
+        var descripcionTarea by remember { mutableStateOf("") }
         var programadorSeleccionado by remember { mutableStateOf("") }
         val listaProgramadores = listOf("Maria", "Juan", "Luis", "Ana", "Carlos")
 
@@ -40,19 +42,15 @@ class TareaScreen(private val tareaNombre: String, private val tareaDescripcion:
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
-                        text = "Modificacion de ",
-                        fontSize = 24.sp,
+                        text = "Agregar Tarea ",
+                        fontSize = 32.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White
                     )
-                    Text(
-                        text = nombreTarea,
-                        fontSize = 32.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.Cyan
-                    )
                 }
-                    Text("Nombre de la tarea:", color = Color.White)
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text("Nombre de la tarea:", color = Color.White)
                 BasicTextField(
                     value = nombreTarea,
                     onValueChange = { nombreTarea = it },

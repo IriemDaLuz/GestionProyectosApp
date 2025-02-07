@@ -1,3 +1,5 @@
+package screens
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -18,12 +20,12 @@ import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 
-class AgregarTareaScreen : Screen {
+class TareaScreen(private val tareaNombre: String, private val tareaDescripcion: String) : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.current
-        var nombreTarea by remember { mutableStateOf("") }
-        var descripcionTarea by remember { mutableStateOf("") }
+        var nombreTarea by remember { mutableStateOf(tareaNombre) }
+        var descripcionTarea by remember { mutableStateOf(tareaDescripcion) }
         var programadorSeleccionado by remember { mutableStateOf("") }
         val listaProgramadores = listOf("Maria", "Juan", "Luis", "Ana", "Carlos")
 
@@ -40,15 +42,19 @@ class AgregarTareaScreen : Screen {
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
-                        text = "Agregar Tarea ",
-                        fontSize = 32.sp,
+                        text = "Modificacion de ",
+                        fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White
                     )
+                    Text(
+                        text = nombreTarea,
+                        fontSize = 32.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Cyan
+                    )
                 }
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Text("Nombre de la tarea:", color = Color.White)
+                    Text("Nombre de la tarea:", color = Color.White)
                 BasicTextField(
                     value = nombreTarea,
                     onValueChange = { nombreTarea = it },

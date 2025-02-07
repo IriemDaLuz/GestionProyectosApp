@@ -1,3 +1,8 @@
+package screens
+
+import model.User
+import network.apiLogIn
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -21,6 +26,8 @@ class LoginScreen : Screen {
     override fun Content() {
         var username by remember { mutableStateOf("") }
         var password by remember { mutableStateOf("") }
+        var user: User by remember { mutableStateOf(User(0, 0, "", "")) }
+
         var passwordVisible by remember { mutableStateOf(false) }
         val navigator = LocalNavigator.current
 
@@ -116,7 +123,14 @@ class LoginScreen : Screen {
                     Spacer(modifier = Modifier.height(80.dp))
                     Button(
                         onClick = {
-                            navigator?.push(HomeScreen())
+                            if (!username.isEmpty() && !password.isEmpty()){
+                            apiLogIn(username, password){
+                                user = it
+                                if(!user.nombre.isEmpty()){
+                                    navigator?.push(HomeScreen(user))
+                                }
+                            }
+                        }
                         },
                         colors = ButtonDefaults.buttonColors(backgroundColor = Color.Cyan)
                     ) {
